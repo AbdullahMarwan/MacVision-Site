@@ -215,7 +215,7 @@ html+='<option value="'+types[i]+'">'+types[i]+'</option>';
 sel.innerHTML=html;
 }
 
-function onTypeChange(type){
+window.onTypeChange=function(type){
 var modelSel=document.getElementById("device-model-filter");
 if(type==="all"){
 modelSel.style.display="none";
@@ -230,7 +230,7 @@ modelSel.innerHTML=html;
 modelSel.style.display="inline-block";
 }
 filterDevices();
-}
+};
 
 window.filterDevices=function(){
 var typeVal=document.getElementById("device-type-filter").value;

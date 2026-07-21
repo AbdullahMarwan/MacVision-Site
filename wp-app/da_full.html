@@ -216,12 +216,12 @@ html+='<option value="'+types[i]+'">'+types[i]+'</option>';
 sel.innerHTML=html;
 }
 
-function onTypeChange(type){
+window.onTypeChange=function(type){
 var modelSel=document.getElementById("device-model-filter");
 if(type==="all"){
 modelSel.style.display="none";
 }else{
-var models=typeModels[type]||[];
+var models=typeModels[type]||{};
 var html='<option value="all">Alle modeller</option>';
 var keys=Object.keys(models);
 for(var i=0;i<keys.length;i++){
@@ -231,7 +231,7 @@ modelSel.innerHTML=html;
 modelSel.style.display="inline-block";
 }
 filterDevices();
-}
+};
 
 window.filterDevices=function(){
 var typeVal=document.getElementById("device-type-filter").value;
