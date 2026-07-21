@@ -172,6 +172,7 @@
 (function(){
 var CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRdWMks7NYgMgKMpt3jRrGh57Ca-iw8rg1zLHwzbArNGxSpJjBQ8cEXMJRhAipSTdNC4u-77dWKNyDy/pub?gid=0&single=true&output=csv";
 var LANG="da";
+var SVC_LABELS={Battery:"Batteri","Battery OEM":"Batteri OEM",Screen:"Skærm","Screen OLED":"Skærm OLED","Screen ORG":"Skærm ORG","Back Glass":"Bagside"};
 
 function parseCSV(text){
 var rows=[];var row=[];var cell="";var inQuote=false;
@@ -197,36 +198,24 @@ if(cell||row.length){row.push(cell);rows.push(row)}
 return rows;
 }
 
-function groupByDevice(rows){
-var headers=rows[0];var devices={};
-for(var i=1;i<rows.length;i++){
-var r=rows[i];if(r.length<5)continue;
-var nameDA=r[0].trim();var nameEN=r[1].trim();
-var cat=r[2].trim();var svcDA=r[3].trim();var svcEN=r[4].trim();
-var price=parseInt(r[5])||0;var img=(r[6]||"").trim();
-var key=nameDA;
-if(!devices[key]){devices[key]={nameDA:nameDA,nameEN:nameEN,category:cat,image:img,services:[]}}
-devices[key].services.push({da:svcDA,en:svcEN,price:price});
-if(img){if(!devices[key].image){devices[key].image=img}}
-}
-return devices;
-}
-
-function renderGrid(devices){
+function renderGrid(headers,rows){
 var grid=document.getElementById("iphone-grid");
-var html="";var keys=Object.keys(devices);
-for(var i=0;i<keys.length;i++){
-var d=devices[keys[i]];
-var name=LANG==="da"?d.nameDA:d.nameEN;
-var img=d.image||"https://placehold.co/80x120/f0f0f0/999?text=iPhone";
-html+='<div class="device-card" data-category="'+d.category+'">';
-html+='<img src="'+img+'" alt="'+name+'" width="80" height="100"/>';
+var html="";
+for(var i=0;i<rows.length;i++){
+var r=rows[i];if(r.length<2)continue;
+var name=r[0].trim();var cat=r[1].trim();var img=(r[2]||"").trim();
+if(!name)continue;
+html+='<div class="device-card" data-category="'+cat+'">';
+var imgSrc=img||"https://placehold.co/80x120/f0f0f0/999?text=iPhone";
+html+='<img src="'+imgSrc+'" alt="'+name+'" width="80" height="100"/>';
 html+='<h4>'+name+'</h4>';
 html+='<div class="price-list">';
-for(var j=0;j<d.services.length;j++){
-var s=d.services[j];
-var svcName=LANG==="da"?s.da:s.en;
-html+='<div class="price-row"><span>'+svcName+'</span><span class="price-val">'+s.price+' kr.</span></div>';
+for(var j=3;j<headers.length;j++){
+var val=parseInt(r[j])||0;
+if(!val)continue;
+var label=headers[j].trim();
+if(LANG==="da"){label=SVC_LABELS[headers[j].trim()]||headers[j].trim()}
+html+='<div class="price-row"><span>'+label+'</span><span class="price-val">'+val+' kr.</span></div>';
 }
 html+='</div></div>';
 }
@@ -246,8 +235,8 @@ el.classList.toggle("hidden-device",!(catMatch?searchMatch:false))
 
 fetch(CSV_URL).then(function(r){return r.text()}).then(function(csv){
 var rows=parseCSV(csv);
-var devices=groupByDevice(rows);
-renderGrid(devices);
+var headers=rows[0];
+renderGrid(headers,rows.slice(1));
 }).catch(function(e){
 document.getElementById("iphone-grid").innerHTML='<div class="device-loading">Kunne ikke indlæse enheder. Prøv igen senere.</div>';
 });
