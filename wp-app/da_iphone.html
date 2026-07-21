@@ -1,205 +1,152 @@
-<!-- wp:html --><style>.filter-wrap{margin:0 auto 3rem;text-align:center;padding:0 1rem}.filter-label{display:block;font-weight:600;font-size:1rem;margin-bottom:0.5rem;color:#333}.filter-select{width:auto;min-width:0;max-width:280px;padding:0.6rem 2rem 0.6rem 0.8rem;font-size:0.95rem;font-family:inherit;border:2px solid var(--wp--preset--color--accent-6,#333);border-radius:10px;background:#fff;cursor:pointer;box-sizing:border-box}@media(max-width:480px){.filter-select{max-width:100%;width:100%}}.filter-select:focus{outline:none;box-shadow:0 0 0 3px rgba(0,0,0,0.1)}.filter-select optgroup{font-weight:700;font-style:normal;color:#333}.filter-select option{font-weight:400}.filter-select option:disabled{color:#999}#iphone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1200px;margin:0 auto;padding:0 1rem}@media(max-width:960px){#iphone-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){#iphone-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){#iphone-grid{grid-template-columns:1fr}}.device-card{background:#fff;border:1px solid var(--wp--preset--color--accent-6,#ddd);border-radius:12px;padding:24px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;transition:opacity .2s}.device-card.hidden-device{display:none!important}.device-card img{width:80px;height:100px;object-fit:contain;margin-bottom:12px}.device-card h4{font-size:1.05rem;font-weight:700;margin:0 0 10px 0;line-height:1.3}.price-list{width:100%;font-size:0.9rem}.price-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0}.price-row:last-child{border-bottom:none}.price-val{font-weight:500}.filter-controls{display:flex;align-items:flex-end;justify-content:center;gap:1rem;flex-wrap:wrap;margin-left:1.5rem;margin-top:1rem}.filter-search{width:auto;min-width:0;max-width:280px;padding:0.6rem 0.8rem;font-size:0.95rem;font-family:inherit;border:2px solid var(--wp--preset--color--accent-6,#333);border-radius:10px;background:#fff;cursor:pointer;box-sizing:border-box}@media(max-width:480px){.filter-search{max-width:100%;width:100%}}.filter-search:focus{outline:none;box-shadow:0 0 0 3px rgba(0,0,0,0.1)}</style><h2 style="text-align:center;margin-top:var(--wp--preset--spacing--60,4rem);margin-bottom:var(--wp--preset--spacing--20,1rem)">Reparationspriser</h2><p style="text-align:center;margin-bottom:var(--wp--preset--spacing--40,2rem);color:#666">Alle priser inkl. moms. Kontakt os for pris på andre enheder.</p><div class="filter-wrap"><label class="filter-label" for="device-filter">Vælg kategori</label><select id="device-filter" class="filter-select" onchange="filterDevices(this.value)"><option value="all">Alle Enheder</option>
+<!-- wp:html -->
+<style>
+.filter-wrap{margin:0 auto 3rem;text-align:center;padding:0 1rem}
+.filter-label{display:block;font-weight:600;font-size:1rem;margin-bottom:0.5rem;color:#333}
+.filter-select{width:auto;min-width:0;max-width:280px;padding:0.6rem 2rem 0.6rem 0.8rem;font-size:0.95rem;font-family:inherit;border:2px solid var(--wp--preset--color--accent-6,#333);border-radius:10px;background:#fff;cursor:pointer;box-sizing:border-box}
+@media(max-width:480px){.filter-select{max-width:100%;width:100%}}
+.filter-select:focus{outline:none;box-shadow:0 0 0 3px rgba(0,0,0,0.1)}
+.filter-select optgroup{font-weight:700;font-style:normal;color:#333}
+.filter-select option{font-weight:400}
+.filter-select option:disabled{color:#999}
+#iphone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1200px;margin:0 auto;padding:0 1rem}
+@media(max-width:960px){#iphone-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){#iphone-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){#iphone-grid{grid-template-columns:1fr}}
+.device-card{background:#fff;border:1px solid var(--wp--preset--color--accent-6,#ddd);border-radius:12px;padding:24px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;transition:opacity .2s}
+.device-card.hidden-device{display:none!important}
+.device-card img{width:80px;height:100px;object-fit:contain;margin-bottom:12px}
+.device-card h4{font-size:1.05rem;font-weight:700;margin:0 0 10px 0;line-height:1.3}
+.price-list{width:100%;font-size:0.9rem}
+.price-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0}
+.price-row:last-child{border-bottom:none}
+.price-val{font-weight:500}
+.filter-controls{display:flex;align-items:flex-end;justify-content:center;gap:1rem;flex-wrap:wrap;margin-left:1.5rem;margin-top:1rem}
+.filter-search{width:auto;min-width:0;max-width:280px;padding:0.6rem 0.8rem;font-size:0.95rem;font-family:inherit;border:2px solid var(--wp--preset--color--accent-6,#333);border-radius:10px;background:#fff}
+.filter-search:focus{outline:none;box-shadow:0 0 0 3px rgba(0,0,0,0.1)}
+.device-loading{text-align:center;padding:3rem;color:#999;font-size:1rem}
+.device-loading .spinner{display:inline-block;width:24px;height:24px;border:3px solid #f0f0f0;border-top-color:#999;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+<div class="filter-wrap">
+<label class="filter-label" for="device-filter">Vælg kategori</label>
+<div style="display:flex;justify-content:center;flex-wrap:wrap">
+<select id="device-filter" class="filter-select" onchange="filterDevices(this.value)">
+<option value="all">Alle enheder</option>
 <optgroup label="iPhone">
-  <option value="iphone-17">iPhone 17</option>
-  <option value="iphone-16">iPhone 16</option>
-  <option value="iphone-15">iPhone 15</option>
-  <option value="iphone-14">iPhone 14</option>
-  <option value="iphone-13">iPhone 13</option>
-  <option value="iphone-12">iPhone 12</option>
-  <option value="iphone-11">iPhone 11</option>
-  <option value="iphone-x">iPhone X</option>
-  <option value="iphone-8">iPhone 8 / SE</option>
-  <option value="iphone-7">iPhone 7</option>
-  <option value="iphone-6">iPhone 6</option>
-  <option value="iphone-5">iPhone 5 / SE 1</option>
+<option value="iphone-17">iPhone 17</option>
+<option value="iphone-16">iPhone 16</option>
+<option value="iphone-15">iPhone 15</option>
+<option value="iphone-14">iPhone 14</option>
+<option value="iphone-13">iPhone 13</option>
+<option value="iphone-12">iPhone 12</option>
+<option value="iphone-11">iPhone 11</option>
+<option value="iphone-x">iPhone X</option>
+<option value="iphone-8">iPhone 8 / SE</option>
+<option value="iphone-7">iPhone 7</option>
+<option value="iphone-6">iPhone 6</option>
+<option value="iphone-5">iPhone 5 / SE 1</option>
 </optgroup>
 <optgroup label="iPad"><option value="" disabled>Snart tilgængelig</option></optgroup>
 <optgroup label="MacBook"><option value="" disabled>Snart tilgængelig</option></optgroup>
 <optgroup label="iMac"><option value="" disabled>Snart tilgængelig</option></optgroup>
 <optgroup label="PC / Laptop"><option value="" disabled>Snart tilgængelig</option></optgroup>
 <optgroup label="Tilbehør"><option value="" disabled>Snart tilgængelig</option></optgroup>
-</select><div class="filter-controls"><label class="filter-label" for="device-search">Søg enhed</label><input type="text" id="device-search" class="filter-search" placeholder="Skriv for at søge..." oninput="filterDevices(document.getElementById('device-filter').value)"/></div></div><div id="iphone-grid"><div class="device-card" data-category="iphone-17"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 17 Pro Max" width="80" height="100"/><h4>iPhone 17 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">2000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-17"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 17 Pro" width="80" height="100"/><h4>iPhone 17 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">2000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-17"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 17 Air" width="80" height="100"/><h4>iPhone 17 Air</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">750 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">2000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-17"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 17" width="80" height="100"/><h4>iPhone 17</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">750 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-16"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 16e" width="80" height="100"/><h4>iPhone 16e</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">750 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-16"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 16 Pro Max" width="80" height="100"/><h4>iPhone 16 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">750 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1700 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1200 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-16"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 16 Pro" width="80" height="100"/><h4>iPhone 16 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1600 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-16"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 16 Plus" width="80" height="100"/><h4>iPhone 16 Plus</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1400 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-16"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 16" width="80" height="100"/><h4>iPhone 16</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1400 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-15"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 15 Pro Max" width="80" height="100"/><h4>iPhone 15 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1400 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-15"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 15 Pro" width="80" height="100"/><h4>iPhone 15 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">650 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1100 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-15"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 15 Plus" width="80" height="100"/><h4>iPhone 15 Plus</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">650 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1100 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-15"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 15" width="80" height="100"/><h4>iPhone 15</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1000 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-14"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 14 Pro Max" width="80" height="100"/><h4>iPhone 14 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-14"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 14 Pro" width="80" height="100"/><h4>iPhone 14 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">650 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1100 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-14"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 14 Plus" width="80" height="100"/><h4>iPhone 14 Plus</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1100 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-14"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 14" width="80" height="100"/><h4>iPhone 14</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1000 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-13"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 13 Pro Max" width="80" height="100"/><h4>iPhone 13 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">650 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">1100 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">1000 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-13"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 13 Pro" width="80" height="100"/><h4>iPhone 13 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">900 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-13"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 13 mini" width="80" height="100"/><h4>iPhone 13 mini</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">900 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-13"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 13" width="80" height="100"/><h4>iPhone 13</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">900 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-12"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 12 Pro Max" width="80" height="100"/><h4>iPhone 12 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">650 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">950 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">2200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">900 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-12"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 12 Pro" width="80" height="100"/><h4>iPhone 12 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1600 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">800 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-12"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 12 mini" width="80" height="100"/><h4>iPhone 12 mini</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1600 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">800 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-12"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 12" width="80" height="100"/><h4>iPhone 12</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1600 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">800 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-11"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 11 Pro Max" width="80" height="100"/><h4>iPhone 11 Pro Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">2000 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1500 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">900 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-11"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 11 Pro" width="80" height="100"/><h4>iPhone 11 Pro</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1900 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1400 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">900 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-11"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 11" width="80" height="100"/><h4>iPhone 11</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">800 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-x"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone XS Max" width="80" height="100"/><h4>iPhone XS Max</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">900 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">850 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-x"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone XS" width="80" height="100"/><h4>iPhone XS</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">750 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-x"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone XR" width="80" height="100"/><h4>iPhone XR</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">750 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-x"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone X" width="80" height="100"/><h4>iPhone X</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">750 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">750 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-8"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 8 Plus" width="80" height="100"/><h4>iPhone 8 Plus</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">700 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">1200 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">700 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-8"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 8 G / SE 2020 / SE 2022" width="80" height="100"/><h4>iPhone 8 G / SE 2020 / SE 2022</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Bagside</span><span class="price-val">600 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-7"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 7 Plus" width="80" height="100"/><h4>iPhone 7 Plus</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">800 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">800 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-7"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 7 G" width="80" height="100"/><h4>iPhone 7 G</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">500 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">600 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-6"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 6 Plus" width="80" height="100"/><h4>iPhone 6 Plus</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">450 kr.</span></div>
-<div class="price-row"><span>Skærm ORG</span><span class="price-val">600 kr.</span></div>
-<div class="price-row"><span>Skærm OLED</span><span class="price-val">600 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-6"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 6S" width="80" height="100"/><h4>iPhone 6S</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">350 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">400 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">400 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-6"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 6G" width="80" height="100"/><h4>iPhone 6G</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">350 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">350 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">400 kr.</span></div>
-</div></div>
-<div class="device-card" data-category="iphone-5"><img src="https://placehold.co/80x120/f0f0f0/999?text=iPhone" alt="iPhone 5 / 5S / SE 1" width="80" height="100"/><h4>iPhone 5 / 5S / SE 1</h4><div class="price-list"><div class="price-row"><span>Batteri</span><span class="price-val">300 kr.</span></div>
-<div class="price-row"><span>Batteri OEM</span><span class="price-val">300 kr.</span></div>
-<div class="price-row"><span>Skærm</span><span class="price-val">400 kr.</span></div>
-</div></div>
-</div><script>function filterDevices(c){var s=(document.getElementById("device-search")||{}).value||"";s=s.toLowerCase();document.querySelectorAll(".device-card").forEach(function(el){var n=el.querySelector("h4").textContent.toLowerCase();var m=c==="all"||el.getAttribute("data-category")===c;el.classList.toggle("hidden-device",!(m&&(!s||n.indexOf(s)>=0)))})}</script><!-- /wp:html -->
+</select>
+<div class="filter-controls">
+<label class="filter-label" for="device-search">Søg enhed</label>
+<input type="text" id="device-search" class="filter-search" placeholder="Skriv for at søge..." oninput="filterDevices(document.getElementById('device-filter').value)"/>
+</div>
+</div>
+</div>
+
+<div id="iphone-grid">
+<div class="device-loading"><span class="spinner"></span> Indlæser enheder...</div>
+</div>
+
+<script>
+(function(){
+var CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRdWMks7NYgMgKMpt3jRrGh57Ca-iw8rg1zLHwzbArNGxSpJjBQ8cEXMJRhAipSTdNC4u-77dWKNyDy/pub?gid=0&single=true&output=csv";
+var LANG="da";
+
+function parseCSV(text){
+var rows=[];var row=[];var cell="";var inQuote=false;
+for(var i=0;i<text.length;i++){
+var c=text[i];
+if(inQuote){
+if(c==='"'){
+if(i+1<text.length){if(text[i+1]==='"'){cell+='"';i++;continue}}
+inQuote=false
+}
+else{cell+=c}
+}else{
+if(c==='"'){inQuote=true}
+else if(c===','){row.push(cell);cell=""}
+else if(c==='\n'||c==='\r'){
+if(c==='\r'){if(i+1<text.length){if(text[i+1]==='\n'){i++}}}
+row.push(cell);cell="";rows.push(row);row=[]
+}
+else{cell+=c}
+}
+}
+if(cell||row.length){row.push(cell);rows.push(row)}
+return rows;
+}
+
+function groupByDevice(rows){
+var headers=rows[0];var devices={};
+for(var i=1;i<rows.length;i++){
+var r=rows[i];if(r.length<5)continue;
+var nameDA=r[0].trim();var nameEN=r[1].trim();
+var cat=r[2].trim();var svcDA=r[3].trim();var svcEN=r[4].trim();
+var price=parseInt(r[5])||0;var img=(r[6]||"").trim();
+var key=nameDA;
+if(!devices[key]){devices[key]={nameDA:nameDA,nameEN:nameEN,category:cat,image:img,services:[]}}
+devices[key].services.push({da:svcDA,en:svcEN,price:price});
+if(img){if(!devices[key].image){devices[key].image=img}}
+}
+return devices;
+}
+
+function renderGrid(devices){
+var grid=document.getElementById("iphone-grid");
+var html="";var keys=Object.keys(devices);
+for(var i=0;i<keys.length;i++){
+var d=devices[keys[i]];
+var name=LANG==="da"?d.nameDA:d.nameEN;
+var img=d.image||"https://placehold.co/80x120/f0f0f0/999?text=iPhone";
+html+='<div class="device-card" data-category="'+d.category+'">';
+html+='<img src="'+img+'" alt="'+name+'" width="80" height="100"/>';
+html+='<h4>'+name+'</h4>';
+html+='<div class="price-list">';
+for(var j=0;j<d.services.length;j++){
+var s=d.services[j];
+var svcName=LANG==="da"?s.da:s.en;
+html+='<div class="price-row"><span>'+svcName+'</span><span class="price-val">'+s.price+' kr.</span></div>';
+}
+html+='</div></div>';
+}
+grid.innerHTML=html;
+}
+
+window.filterDevices=function(c){
+var s=(document.getElementById("device-search")||{}).value||"";
+s=s.toLowerCase();
+document.querySelectorAll(".device-card").forEach(function(el){
+var n=el.querySelector("h4").textContent.toLowerCase();
+var catMatch=(c==="all")||(el.getAttribute("data-category")===c);
+var searchMatch=(!s)||(n.indexOf(s)>=0);
+el.classList.toggle("hidden-device",!(catMatch?searchMatch:false))
+});
+};
+
+fetch(CSV_URL).then(function(r){return r.text()}).then(function(csv){
+var rows=parseCSV(csv);
+var devices=groupByDevice(rows);
+renderGrid(devices);
+}).catch(function(e){
+document.getElementById("iphone-grid").innerHTML='<div class="device-loading">Kunne ikke indlæse enheder. Prøv igen senere.</div>';
+});
+})();
+</script>
+<!-- /wp:html -->
