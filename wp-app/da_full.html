@@ -112,10 +112,10 @@
 .filter-select optgroup{font-weight:700;font-style:normal;color:#333}
 .filter-select option{font-weight:400}
 .filter-select option:disabled{color:#999}
-#iphone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1200px;margin:0 auto;padding:0 1rem}
-@media(max-width:960px){#iphone-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:720px){#iphone-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){#iphone-grid{grid-template-columns:1fr}}
+#device-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1200px;margin:0 auto;padding:0 1rem}
+@media(max-width:960px){#device-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){#device-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){#device-grid{grid-template-columns:1fr}}
 .device-card{background:#fff;border:1px solid var(--wp--preset--color--accent-6,#ddd);border-radius:12px;padding:24px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;transition:opacity .2s}
 .device-card.hidden-device{display:none!important}
 .device-card img{width:80px;height:100px;object-fit:contain;margin-bottom:12px}
@@ -133,46 +133,37 @@
 </style>
 
 <div class="filter-wrap">
-<label class="filter-label" for="device-filter">Vælg kategori</label>
+<label class="filter-label" for="device-type-filter">Vælg enhedstype</label>
 <div style="display:flex;justify-content:center;flex-wrap:wrap">
-<select id="device-filter" class="filter-select" onchange="filterDevices(this.value)">
+<select id="device-type-filter" class="filter-select" onchange="onTypeChange(this.value)">
 <option value="all">Alle enheder</option>
-<optgroup label="iPhone">
-<option value="iphone-17">iPhone 17</option>
-<option value="iphone-16">iPhone 16</option>
-<option value="iphone-15">iPhone 15</option>
-<option value="iphone-14">iPhone 14</option>
-<option value="iphone-13">iPhone 13</option>
-<option value="iphone-12">iPhone 12</option>
-<option value="iphone-11">iPhone 11</option>
-<option value="iphone-x">iPhone X</option>
-<option value="iphone-8">iPhone 8 / SE</option>
-<option value="iphone-7">iPhone 7</option>
-<option value="iphone-6">iPhone 6</option>
-<option value="iphone-5">iPhone 5 / SE 1</option>
-</optgroup>
-<optgroup label="iPad"><option value="" disabled>Snart tilgængelig</option></optgroup>
-<optgroup label="MacBook"><option value="" disabled>Snart tilgængelig</option></optgroup>
-<optgroup label="iMac"><option value="" disabled>Snart tilgængelig</option></optgroup>
-<optgroup label="PC / Laptop"><option value="" disabled>Snart tilgængelig</option></optgroup>
-<optgroup label="Tilbehør"><option value="" disabled>Snart tilgængelig</option></optgroup>
+</select>
+<select id="device-model-filter" class="filter-select" onchange="filterDevices()" style="display:none">
+<option value="all">Alle modeller</option>
 </select>
 <div class="filter-controls">
 <label class="filter-label" for="device-search">Søg enhed</label>
-<input type="text" id="device-search" class="filter-search" placeholder="Skriv for at søge..." oninput="filterDevices(document.getElementById('device-filter').value)"/>
+<input type="text" id="device-search" class="filter-search" placeholder="Skriv for at søge..." oninput="filterDevices()"/>
 </div>
 </div>
 </div>
 
-<div id="iphone-grid">
+<div id="device-grid">
 <div class="device-loading"><span class="spinner"></span> Indlæser enheder...</div>
 </div>
 
 <script>
 (function(){
-var CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRdWMks7NYgMgKMpt3jRrGh57Ca-iw8rg1zLHwzbArNGxSpJjBQ8cEXMJRhAipSTdNC4u-77dWKNyDy/pub?gid=0&single=true&output=csv";
+var BASE="https://docs.google.com/spreadsheets/d/e/2PACX-1vRdWMks7NYgMgKMpt3jRrGh57Ca-iw8rg1zLHwzbArNGxSpJjBQ8cEXMJRhAipSTdNC4u-77dWKNyDy/pub";
+var TABS=[
+{url:BASE+"?gid=0&single=true&output=csv",type:"iPhone"},
+{url:BASE+"?gid=12930877&single=true&output=csv",type:"iPad"},
+{url:BASE+"?gid=1541300668&single=true&output=csv",type:"MacBook"},
+{url:BASE+"?gid=120611455&single=true&output=csv",type:"iMac"}
+];
 var LANG="da";
-var SVC_LABELS={Battery:"Batteri","Battery OEM":"Batteri OEM",Screen:"Skærm","Screen OLED":"Skærm OLED","Screen ORG":"Skærm ORG","Back Glass":"Bagside"};
+var SVC_LABELS={Battery:"Batteri","Battery OEM":"Batteri OEM",Screen:"Skærm","Screen OLED":"Skærm OLED","Screen ORG":"Skærm ORG","Back Glass":"Bagside",Keyboard:"Tastatur",Trackpad:"Trackpad"};
+var typeModels={};var allDevices=[];
 
 function parseCSV(text){
 var rows=[];var row=[];var cell="";var inQuote=false;
@@ -198,48 +189,109 @@ if(cell||row.length){row.push(cell);rows.push(row)}
 return rows;
 }
 
-function renderGrid(headers,rows){
-var grid=document.getElementById("iphone-grid");
-var html="";
-for(var i=0;i<rows.length;i++){
+function parseTab(csv,deviceType){
+var rows=parseCSV(csv);if(rows.length<2)return[];
+var headers=rows[0];var devices=[];
+for(var i=1;i<rows.length;i++){
 var r=rows[i];if(r.length<2)continue;
 var name=r[0].trim();var cat=r[1].trim();var img=(r[2]||"").trim();
 if(!name)continue;
-html+='<div class="device-card" data-category="'+cat+'">';
-var imgSrc=img||"https://placehold.co/80x120/f0f0f0/999?text=iPhone";
-html+='<img src="'+imgSrc+'" alt="'+name+'" width="80" height="100"/>';
-html+='<h4>'+name+'</h4>';
-html+='<div class="price-list">';
+var services=[];
 for(var j=3;j<headers.length;j++){
 var val=parseInt(r[j])||0;
-if(!val)continue;
-var label=headers[j].trim();
-if(LANG==="da"){label=SVC_LABELS[headers[j].trim()]||headers[j].trim()}
-html+='<div class="price-row"><span>'+label+'</span><span class="price-val">'+val+' kr.</span></div>';
+if(val){services.push({key:headers[j].trim(),price:val})}
+}
+devices.push({name:name,category:cat,image:img,type:deviceType,services:services});
+}
+return devices;
+}
+
+function buildDropdown(){
+var sel=document.getElementById("device-type-filter");
+var html='<option value="all">Alle enheder</option>';
+var types=Object.keys(typeModels);
+for(var i=0;i<types.length;i++){
+html+='<option value="'+types[i]+'">'+types[i]+'</option>';
+}
+sel.innerHTML=html;
+}
+
+function onTypeChange(type){
+var modelSel=document.getElementById("device-model-filter");
+if(type==="all"){
+modelSel.style.display="none";
+}else{
+var models=typeModels[type]||[];
+var html='<option value="all">Alle modeller</option>';
+var keys=Object.keys(models);
+for(var i=0;i<keys.length;i++){
+html+='<option value="'+keys[i]+'">'+keys[i].replace(/-/g," ').replace(/\b\w/g,function(l){return l.toUpperCase()})+'</option>';
+}
+modelSel.innerHTML=html;
+modelSel.style.display="inline-block";
+}
+filterDevices();
+}
+
+window.filterDevices=function(){
+var typeVal=document.getElementById("device-type-filter").value;
+var modelEl=document.getElementById("device-model-filter");
+var modelVal=modelEl.style.display!=="none"?modelEl.value:"all";
+var s=(document.getElementById("device-search")||{}).value||"";
+s=s.toLowerCase();
+document.querySelectorAll(".device-card").forEach(function(el){
+var n=el.querySelector("h4").textContent.toLowerCase();
+var dType=el.getAttribute("data-type");
+var dCat=el.getAttribute("data-category");
+var typeMatch=(typeVal==="all")||(dType===typeVal);
+var modelMatch=(modelVal==="all")||(dCat===modelVal);
+var searchMatch=(!s)||(n.indexOf(s)>=0);
+var show=typeMatch&&modelMatch&&searchMatch;
+el.classList.toggle("hidden-device",!show);
+});
+};
+
+function renderAll(){
+var grid=document.getElementById("device-grid");
+var html="";
+for(var i=0;i<allDevices.length;i++){
+var d=allDevices[i];
+var img=d.image||"https://placehold.co/80x120/f0f0f0/999?text=iPhone";
+html+='<div class="device-card" data-category="'+d.category+'" data-type="'+d.type+'">';
+html+='<img src="'+img+'" alt="'+d.name+'" width="80" height="100"/>';
+html+='<h4>'+d.name+'</h4>';
+html+='<div class="price-list">';
+for(var j=0;j<d.services.length;j++){
+var svc=d.services[j];
+var label=svc.key;
+if(LANG==="da"){label=SVC_LABELS[svc.key]||svc.key}
+html+='<div class="price-row"><span>'+label+'</span><span class="price-val">'+svc.price+' kr.</span></div>';
 }
 html+='</div></div>';
 }
 grid.innerHTML=html;
 }
 
-window.filterDevices=function(c){
-var s=(document.getElementById("device-search")||{}).value||"";
-s=s.toLowerCase();
-document.querySelectorAll(".device-card").forEach(function(el){
-var n=el.querySelector("h4").textContent.toLowerCase();
-var catMatch=(c==="all")||(el.getAttribute("data-category")===c);
-var searchMatch=(!s)||(n.indexOf(s)>=0);
-el.classList.toggle("hidden-device",!(catMatch?searchMatch:false))
+var pending=TABS.length;
+var loaded=0;
+for(var t=0;t<TABS.length;t++){
+(function(tab){
+fetch(tab.url).then(function(r){
+if(!r.ok)throw new Error(r.status);
+return r.text();
+}).then(function(csv){
+var devs=parseTab(csv,tab.type);
+for(var i=0;i<devs.length;i++){
+allDevices.push(devs[i]);
+if(!typeModels[tab.type])typeModels[tab.type]={};
+typeModels[tab.type][devs[i].category]=true;
+}
+loaded++;if(loaded===pending){buildDropdown();renderAll();}
+}).catch(function(){
+loaded++;if(loaded===pending){buildDropdown();renderAll();}
 });
-};
-
-fetch(CSV_URL).then(function(r){return r.text()}).then(function(csv){
-var rows=parseCSV(csv);
-var headers=rows[0];
-renderGrid(headers,rows.slice(1));
-}).catch(function(e){
-document.getElementById("iphone-grid").innerHTML='<div class="device-loading">Kunne ikke indlæse enheder. Prøv igen senere.</div>';
-});
+})(TABS[t]);
+}
 })();
 </script>
 <!-- /wp:html -->
