@@ -159,7 +159,8 @@ var TABS=[
 {url:BASE+"?gid=0&single=true&output=csv",type:"iPhone"},
 {url:BASE+"?gid=12930877&single=true&output=csv",type:"iPad"},
 {url:BASE+"?gid=1541300668&single=true&output=csv",type:"MacBook"},
-{url:BASE+"?gid=120611455&single=true&output=csv",type:"iMac"}
+{url:BASE+"?gid=120611455&single=true&output=csv",type:"iMac"},
+{url:BASE+"?gid=1908347953&single=true&output=csv",type:"Other"}
 ];
 var LANG="da";
 var SVC_LABELS={Battery:"Batteri","Battery OEM":"Batteri OEM",Screen:"Skærm","Screen OLED":"Skærm OLED","Screen ORG":"Skærm ORG","Back Glass":"Bagside",Keyboard:"Tastatur",Trackpad:"Trackpad"};
@@ -209,9 +210,13 @@ return devices;
 function buildDropdown(){
 var sel=document.getElementById("device-type-filter");
 var html='<option value="all">Alle enheder</option>';
+var order=["iPhone","iPad","MacBook","iMac","Other"];
+for(var i=0;i<order.length;i++){
+if(typeModels[order[i]])html+='<option value="'+order[i]+'">'+order[i]+'</option>';
+}
 var types=Object.keys(typeModels);
 for(var i=0;i<types.length;i++){
-html+='<option value="'+types[i]+'">'+types[i]+'</option>';
+if(order.indexOf(types[i])===-1)html+='<option value="'+types[i]+'">'+types[i]+'</option>';
 }
 sel.innerHTML=html;
 }
@@ -225,7 +230,7 @@ var models=typeModels[type]||{};
 var html='<option value="all">Alle modeller</option>';
 var keys=Object.keys(models);
 for(var i=0;i<keys.length;i++){
-html+='<option value="'+keys[i]+'">'+keys[i].replace(/-/g," ').replace(/\b\w/g,function(l){return l.toUpperCase()})+'</option>';
+html+='<option value="'+keys[i]+'">'+keys[i].replace(/-/g," ").replace(/\b\w/g,function(l){return l.toUpperCase()})+'</option>';
 }
 modelSel.innerHTML=html;
 modelSel.style.display="inline-block";
